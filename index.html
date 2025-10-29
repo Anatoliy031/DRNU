@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Инструменты ДРНУ - Рабочая панель</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --text-primary: #2d3436;
+        --text-secondary: #636e72;
+        --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+        --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
+        --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+        --border-radius: 20px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Плавный нейтральный фон для строгого рабочего вида */
+        background: linear-gradient(135deg, #f2f4f6 0%, #e0e3e6 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Анимированный фон */
+    .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        /* Используем спокойный рабочий фон без анимации */
+        background: linear-gradient(135deg, #dfe3e6 0%, #cfd3d8 100%);
+        background-size: cover;
+        animation: none;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Заголовок */
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+        animation: slideDown 0.8s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .header h1 {
+        color: white;
+        font-size: 2.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        margin-bottom: 10px;
+    }
+
+    .motivational-quote {
+        color: rgba(255,255,255,0.95);
+        font-size: 1.2rem;
+        font-style: italic;
+        padding: 10px 20px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 30px;
+        display: inline-block;
+        backdrop-filter: blur(10px);
+        animation: fadeIn 1s ease 0.5s both;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* Основная сетка */
+    .main-grid {
+        display: grid;
+        /* Since the calendar and current time sections are removed, use a single column layout */
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    /* Карточки */
+    .card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 25px;
+        box-shadow: var(--shadow-md);
+        backdrop-filter: blur(10px);
+        animation: slideUp 0.8s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Часы и таймер */
+    .time-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .digital-clock {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: var(--border-radius);
+        text-align: center;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .digital-clock::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #f093fb, #f5576c, #4facfe, #00f2fe);
+        border-radius: var(--border-radius);
+        opacity: 0;
+        z-index: -1;
+        animation: glowing 3s ease-in-out infinite;
+    }
+
+    @keyframes glowing {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 0.5; }
+    }
+
+    .time-display {
+        font-size: 3rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .date-display {
+        font-size: 1.1rem;
+        margin-top: 10px;
+        opacity: 0.9;
+    }
+
+    .countdown-timer {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 20px;
+        border-radius: var(--border-radius);
+        text-align: center;
+        box-shadow: var(--shadow-md);
+    }
+
+    .countdown-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .countdown-numbers {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .countdown-item {
+        background: rgba(255,255,255,0.2);
+        padding: 10px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+    }
+
+    .countdown-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    .countdown-label {
+        font-size: 0.8rem;
+        opacity: 0.9;
+    }
+
+    /* Календарь */
+    .calendar-section {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 25px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .calendar-navigation {
+        display: flex;
+        gap: 15px;
+    }
+
+    .nav-btn {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+        background: rgba(255,255,255,0.3);
+        transform: scale(1.1);
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+    }
+
+    .calendar-day-header {
+        text-align: center;
+        padding: 10px 5px;
+        font-weight: bold;
+        color: var(--text-primary);
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .calendar-day:hover {
+        background: #f0f3ff;
+        transform: scale(1.05);
+    }
+
+    .calendar-day.today {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .calendar-day.weekend {
+        color: #e74c3c;
+    }
+
+    .calendar-day.other-month {
+        opacity: 0.3;
+    }
+
+    .calendar-day.working-day {
+        background: #e8f5e9;
+    }
+
+    /* Ссылки */
+    .links-section {
+        margin-top: 30px;
+    }
+
+    .links-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 20px;
+    }
+
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .link-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-decoration: none;
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .link-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .link-card:hover::before {
+        left: 100%;
+    }
+
+    .link-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .link-icon {
+        font-size: 1.8rem;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .link-info {
+        flex: 1;
+    }
+
+    .link-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    .link-description {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    /* Плавающие кнопки */
+    .floating-buttons {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 1000;
+    }
+
+    .fab {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        cursor: pointer;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .fab:hover {
+        transform: scale(1.1) rotate(360deg);
+    }
+
+    /* Адаптивный дизайн */
+    @media (max-width: 1024px) {
+        .main-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .links-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .motivational-quote {
+            font-size: 1rem;
+        }
+        
+        .time-display {
+            font-size: 2rem;
+        }
+        
+        .countdown-numbers {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .links-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .floating-buttons {
+            bottom: 20px;
+            right: 20px;
+        }
+    }
+
+    /* Темная тема */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --card-bg: rgba(30, 30, 30, 0.95);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+        }
+        
+        .calendar-day:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+    }
+
+    /* Анимация загрузки */
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="header">
+            <h1><i class="fas fa-briefcase"></i> Панель инструментов ДРНУ</h1>
+            <div class="motivational-quote" id="motivationalQuote">
+                <i class="fas fa-quote-left"></i> 
+                <span id="quoteText">Загрузка...</span> 
+                <i class="fas fa-quote-right"></i>
+            </div>
+        </div>
+
+        <!-- Основная сетка -->
+        <div class="main-grid">
+            <!-- Левая колонка: Время -->
+            <div class="time-section">
+                <!-- Цифровые часы удалены по просьбе пользователя -->
+
+                <!-- Обратный отсчет -->
+                <div class="countdown-timer">
+                    <div class="countdown-title">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span>До конца года</span>
+                    </div>
+                    <div class="countdown-numbers">
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="daysLeft">0</div>
+                            <div class="countdown-label">дней</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="hoursLeft">0</div>
+                            <div class="countdown-label">часов</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="minutesLeft">0</div>
+                            <div class="countdown-label">минут</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="secondsLeft">0</div>
+                            <div class="countdown-label">секунд</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 1.1rem;">
+                        <i class="fas fa-briefcase"></i> 
+                        Рабочих дней: <span id="workingDaysLeft" style="font-weight: bold;">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Календарь удалён по просьбе пользователя -->
+        </div>
+
+        <!-- Секция ссылок -->
+        <div class="links-section">
+            <div class="links-header">
+                <h2><i class="fas fa-th-large"></i> Быстрый доступ к инструментам</h2>
+            </div>
+            <div class="links-grid">
+                <a href="https://anatoliy031.github.io/EKB/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">ЕКБ Совещание</div>
+                        <div class="link-description">Перспективы</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/SolnPan/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-solar-panel"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Солнечные панели</div>
+                        <div class="link-description">Пакеты услуг</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/Colocation/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Колокация</div>
+                        <div class="link-description">Размещение оборудования</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/HozNujdTest/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Хоз. нужды</div>
+                        <div class="link-description">Оптимизация расходов</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/EIS/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">ЕИС</div>
+                        <div class="link-description">Единая информационная система</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/Prognoz/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-chart-area"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Прогноз СЭР</div>
+                        <div class="link-description">Аналитика и прогнозирование</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/Matritsa/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-th"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Матрица</div>
+                        <div class="link-description">Распределение ответственности</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/RG_VOLS/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">РГ ВОЛС</div>
+                        <div class="link-description">План визита РГ</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/Otchet-RG/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Отчет РГ</div>
+                        <div class="link-description">Отчет РГ ВОЛС</div>
+                    </div>
+                </a>
+
+                <a href="https://t.me/VOLS_Assistant_bot" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fab fa-telegram"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Telegram Ассистент</div>
+                        <div class="link-description">Бот-помощник ВОЛС</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/RegVols/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Регламент ВОЛС</div>
+                        <div class="link-description">Распределение ответственности</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/Testvols/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Динамика ВОЛС</div>
+                        <div class="link-description">Еженедельная отчетность</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/letter-automation/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Формирование писем РЦ</div>
+                        <div class="link-description">Система подготовки документов</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/RK-OS/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Взаимодействие РК-ОС</div>
+                        <div class="link-description">Оптимизация, сокращение сроков</div>
+                    </div>
+                </a>
+
+                <a href="https://anatoliy031.github.io/RK-RT/" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Взаимодействие РК-РТ</div>
+                        <div class="link-description">Оптимизация, сокращение сроков</div>
+                    </div>
+                </a>
+
+                <a href="https://htmlpreview.github.io/?https://gist.githubusercontent.com/ashinoff/85fb0c42f1f6540df55cf8b3aec32295/raw/5435151814eb0d9ea8af9562962784f5b7b0d5f5/gistfile1.txt" target="_blank" class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Инструкция Telegram Ассистент</div>
+                        <div class="link-description">Вспомогательные материалы</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Плавающие кнопки -->
+    <div class="floating-buttons">
+        <button class="fab" onclick="toggleTheme()" title="Сменить тему">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <button class="fab" onclick="scrollToTop()" title="Наверх">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <script>
+        // Массив мотивационных цитат
+        const quotes = [
+            "Успех — это сумма маленьких усилий, повторяемых изо дня в день",
+            "Каждый новый день — это новая возможность изменить свою жизнь",
+            "Трудности — это возможности в рабочей одежде",
+            "Делай сегодня то, что другие не хотят, завтра будешь жить так, как другие не могут",
+            "Лучшее время для посадки дерева было 20 лет назад. Второе лучшее время — сейчас",
+            "Не ждите. Время никогда не будет подходящим",
+            "Великие дела не делаются мускульной силой, а настойчивостью",
+            "Путь в тысячу миль начинается с одного шага",
+            "Работа избавляет нас от трёх великих зол: скуки, порока и нужды",
+            "Единственный способ делать великую работу — любить то, что делаешь"
+        ];
+
+        // Переменные для календаря
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        // Функция обновления времени
+        /* Функция updateClock удалена, поскольку отображение текущего времени больше не используется */
+
+        // Функция обратного отсчета
+        function updateCountdown() {
+            const now = new Date();
+            const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59);
+            const distance = endOfYear - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('daysLeft').textContent = days;
+            document.getElementById('hoursLeft').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutesLeft').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('secondsLeft').textContent = seconds.toString().padStart(2, '0');
+
+            // Подсчет рабочих дней
+            let workingDays = 0;
+            let tempDate = new Date(now);
+            while (tempDate <= endOfYear) {
+                const day = tempDate.getDay();
+                if (day !== 0 && day !== 6) {
+                    workingDays++;
+                }
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+            document.getElementById('workingDaysLeft').textContent = workingDays;
+        }
+
+        // Функция генерации календаря
+        function generateCalendar() {
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const prevLastDay = new Date(currentYear, currentMonth, 0);
+            const today = new Date();
+
+            const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                              'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+            
+            document.getElementById('calendarMonth').textContent = 
+                `${monthNames[currentMonth]} ${currentYear}`;
+
+            let html = '';
+            
+            // Заголовки дней недели
+            const dayHeaders = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            dayHeaders.forEach(day => {
+                html += `<div class="calendar-day-header">${day}</div>`;
+            });
+
+            // Пустые ячейки до первого дня месяца
+            let firstDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            
+            // Дни предыдущего месяца
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const day = prevLastDay.getDate() - i;
+                html += `<div class="calendar-day other-month">${day}</div>`;
+            }
+
+            // Дни текущего месяца
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const dayOfWeek = date.getDay();
+                let classes = 'calendar-day';
+                
+                if (date.toDateString() === today.toDateString()) {
+                    classes += ' today';
+                } else if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    classes += ' weekend';
+                } else {
+                    classes += ' working-day';
+                }
+                
+                html += `<div class="${classes}">${day}</div>`;
+            }
+
+            // Дни следующего месяца
+            const remainingCells = 42 - (firstDayOfWeek + lastDay.getDate());
+            for (let day = 1; day <= remainingCells; day++) {
+                html += `<div class="calendar-day other-month">${day}</div>`;
+            }
+
+            document.getElementById('calendarGrid').innerHTML = html;
+        }
+
+        // Навигация по календарю
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        function goToToday() {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            generateCalendar();
+        }
+
+        // Функция смены темы
+        let isDarkTheme = false;
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            const icon = document.getElementById('themeIcon');
+            
+            if (isDarkTheme) {
+                document.documentElement.style.setProperty('--card-bg', 'rgba(30, 30, 30, 0.95)');
+                document.documentElement.style.setProperty('--text-primary', '#ffffff');
+                document.documentElement.style.setProperty('--text-secondary', '#b0b0b0');
+                icon.className = 'fas fa-sun';
+            } else {
+                document.documentElement.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.95)');
+                document.documentElement.style.setProperty('--text-primary', '#2d3436');
+                document.documentElement.style.setProperty('--text-secondary', '#636e72');
+                icon.className = 'fas fa-moon';
+            }
+        }
+
+        // Прокрутка наверх
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Функция обновления цитаты
+        function updateQuote() {
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+            const quoteIndex = dayOfYear % quotes.length;
+            document.getElementById('quoteText').textContent = quotes[quoteIndex];
+        }
+
+        // Инициализация
+        window.addEventListener('DOMContentLoaded', () => {
+            // Вызов функции обновления времени удален, поскольку цифровые часы удалены
+            // Вызов функции генерации календаря удален, поскольку календарь удалён
+            updateCountdown();
+            updateQuote();
+
+            // Обновление обратного отсчета каждую секунду
+            setInterval(updateCountdown, 1000);
+
+            // Обновление цитаты каждый день
+            setInterval(updateQuote, 1000 * 60 * 60 * 24);
+        });
+
+        // Обработка изменения размера окна
+        window.addEventListener('resize', () => {
+            // Адаптивная логика при необходимости
+        });
+
+        // Сохранение состояния темы в localStorage
+        if (localStorage.getItem('darkTheme') === 'true') {
+            toggleTheme();
+        }
+
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('darkTheme', isDarkTheme.toString());
+        });
+    </script>
+</body>
+</html>
