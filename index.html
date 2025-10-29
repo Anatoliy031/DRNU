@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Инструменты ДРНУ</title>
+<style>
+    /* Основные стили */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #e2eafc, #cfdce7, #f5f7fa);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        color: #333;
+    }
+    .container {
+        width: 95%;
+        max-width: 1200px;
+        margin-top: 20px;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2rem;
+        color: #1f4e79;
+    }
+    /* Часы */
+    .clock {
+        text-align: center;
+        font-size: 1.5rem;
+        margin: 15px 0;
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    /* Таймер до конца года */
+    .timer {
+        text-align: center;
+        font-size: 1.3rem;
+        margin: 15px 0;
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        color: #b22222;
+        font-weight: bold;
+    }
+    /* Сетка ссылок */
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-gap: 15px;
+        margin-top: 20px;
+    }
+    .link-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        background: #ffffff;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #1f4e79;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        font-weight: bold;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .link-button:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        background: #f0f6ff;
+    }
+    /* Превентивный адаптив для маленьких экранов */
+    @media (max-width: 600px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+        .clock, .timer {
+            font-size: 1rem;
+        }
+        .link-button {
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Инструменты ДРНУ</h1>
+        <div id="clock" class="clock">Загрузка времени...</div>
+        <div id="countdown" class="timer">Загрузка таймера...</div>
+        <div class="links-grid">
+            <a class="link-button" href="https://anatoliy031.github.io/EKB/" target="_blank">EKB</a>
+            <a class="link-button" href="https://anatoliy031.github.io/SolnPan/" target="_blank">SolnPan</a>
+            <a class="link-button" href="https://anatoliy031.github.io/Colocation/" target="_blank">Colocation</a>
+            <a class="link-button" href="https://anatoliy031.github.io/HozNujdTest/" target="_blank">HozNujdTest</a>
+            <a class="link-button" href="https://anatoliy031.github.io/EIS/" target="_blank">EIS</a>
+            <a class="link-button" href="https://anatoliy031.github.io/Prognoz/" target="_blank">Prognoz</a>
+            <a class="link-button" href="https://anatoliy031.github.io/Matritsa/" target="_blank">Matritsa</a>
+            <a class="link-button" href="https://anatoliy031.github.io/RG_VOLS/" target="_blank">RG_VOLS</a>
+            <a class="link-button" href="https://anatoliy031.github.io/Otchet-RG/" target="_blank">Otchet-RG</a>
+            <a class="link-button" href="https://t.me/VOLS_Assistant_bot" target="_blank">VOLS Assistant (Telegram)</a>
+            <a class="link-button" href="https://anatoliy031.github.io/RegVols/" target="_blank">RegVols</a>
+            <a class="link-button" href="https://anatoliy031.github.io/Testvols/" target="_blank">Testvols</a>
+            <a class="link-button" href="https://anatoliy031.github.io/letter-automation/" target="_blank">Letter Automation</a>
+            <a class="link-button" href="https://anatoliy031.github.io/RK-OS/" target="_blank">RK-OS</a>
+            <a class="link-button" href="https://anatoliy031.github.io/RK-RT/" target="_blank">RK-RT</a>
+            <a class="link-button" href="https://htmlpreview.github.io/?https://gist.githubusercontent.com/ashinoff/85fb0c42f1f6540df55cf8b3aec32295/raw/5435151814eb0d9ea8af9562962784f5b7b0d5f5/gistfile1.txt" target="_blank">Gist Preview</a>
+        </div>
+    </div>
+    <script>
+        // Обновление часов
+        function updateClock() {
+            const now = new Date();
+            // Используем локаль и временную зону Europe/Vienna
+            const options = { dateStyle: 'full', timeStyle: 'medium', timeZone: 'Europe/Vienna' };
+            const formatter = new Intl.DateTimeFormat('ru-RU', options);
+            document.getElementById('clock').textContent = formatter.format(now);
+        }
+
+        // Функция подсчета рабочих дней (Пн-Пт) между двумя датами
+        function countWorkingDays(startDate, endDate) {
+            let count = 0;
+            let current = new Date(startDate);
+            current.setHours(0,0,0,0);
+            endDate = new Date(endDate);
+            endDate.setHours(0,0,0,0);
+            // итерируем дни, включая конечную дату
+            while (current <= endDate) {
+                const day = current.getDay();
+                // день недели (0 - воскресенье, 6 - суббота)
+                if (day !== 0 && day !== 6) {
+                    count++;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+            return count;
+        }
+
+        // Обновление таймера до конца года
+        function updateCountdown() {
+            const now = new Date();
+            // Время до конца текущего года (31 декабря 23:59:59)
+            const currentYear = now.getFullYear();
+            const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59);
+
+            // Расчет общего количества миллисекунд до конца года
+            const distance = endOfYear - now;
+
+            // Вычисление часов, минут, секунд
+            const totalSeconds = Math.floor(distance / 1000);
+            const seconds = totalSeconds % 60;
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            const minutes = totalMinutes % 60;
+            const totalHours = Math.floor(totalMinutes / 60);
+            const hours = totalHours % 24;
+            const days = Math.floor(totalHours / 24);
+
+            // Вычисление количества рабочих дней
+            const workingDays = countWorkingDays(now, endOfYear);
+
+            // Формирование текста таймера
+            let countdownText = `До конца года осталось: ${workingDays} рабочих дней, `;
+            countdownText += `${hours.toString().padStart(2, '0')} часов, `;
+            countdownText += `${minutes.toString().padStart(2, '0')} минут, `;
+            countdownText += `${seconds.toString().padStart(2, '0')} секунд.`;
+            countdownText += "\nНеобходимо всё успеть!";
+
+            document.getElementById('countdown').textContent = countdownText;
+        }
+
+        // Инициализация и периодический вызов функций
+        updateClock();
+        updateCountdown();
+        setInterval(updateClock, 1000);      // обновляем часы каждую секунду
+        setInterval(updateCountdown, 1000);  // обновляем таймер каждую секунду
+    </script>
+</body>
+</html>
